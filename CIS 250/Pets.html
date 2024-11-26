@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Pets</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+    <style>
+        /* Styling for the search section */
+        #search-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        #searchInput {
+            width: 100%; /* Make the search field expand to full width */
+            max-width: 600px; /* Limit the width for larger screens */
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Optional: Add some padding for the search description */
+        #search-description {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Available Pets for Adoption</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <!-- Edit Pet button (will be hidden for regular users) -->
+            <button id="editPetButton" style="display: none;" onclick="location.href='edit_pet.html'">Edit Pet</button>
+            <button id="logoutButton" onclick="location.href='logout.html'" style="margin-left: 10px;">Logout</button>
+        </nav>
+    </header>
+    <main>
+        <!-- Search Bar -->
+        <div id="search-container">
+            <div id="search-description">
+                <p>Search for pets by name or breed:</p>
+            </div>
+            <input type="text" id="searchInput" placeholder="Type to search..." oninput="searchPets()">
+        </div>
+
+        <!-- Existing Pets (will be shown for both staff and users) -->
+        <div id="pet-list">
+            <!-- Pets will be populated dynamically -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // Simulating login state from sessionStorage (you can change this depending on how the login is handled)
+        const userRole = sessionStorage.getItem('userRole'); // Example: 'staff' or 'user'
+
+        // Show or hide the Edit Pet button based on the user role
+        if (userRole === 'staff') {
+            document.getElementById('editPetButton').style.display = 'block'; // Show the edit button for staff
+        } else {
+            document.getElementById('editPetButton').style.display = 'none'; // Hide the edit button for regular users
+        }
+
+        // Function to display pets (from localStorage)
+        function displayPets(petsToDisplay) {
+            const petListDiv = document.getElementById('pet-list');
+            petListDiv.innerHTML = ''; // Clear existing pets
+
+            // Add the pets from the list to the page
+            petsToDisplay.forEach(pet => {
+                const petDiv = document.createElement('div');
+                petDiv.classList.add('pet-item');
+                petDiv.dataset.breed = pet.breed;
+                petDiv.dataset.age = pet.age;
+                petDiv.innerHTML = `
+                    <h3>${pet.name}</h3>
+                    <p>Breed: ${pet.breed}</p>
+                    <p>Age: ${pet.age} years</p>
+                    <button onclick="location.href='pet-profile.html?pet=${pet.name}'">View Profile</button>
+                `;
+                petListDiv.appendChild(petDiv);
+            });
+        }
+
+        // Function to filter pets based on search input
+        function searchPets() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase(); // Get search input
+            const pets = JSON.parse(localStorage.getItem('pets')) || [];
+
+            // Filter pets by name, breed, or age
+            const filteredPets = pets.filter(pet => {
+                return pet.name.toLowerCase().includes(searchTerm) ||
+                       pet.breed.toLowerCase().includes(searchTerm) ||
+                       pet.age.toString().includes(searchTerm);
+            });
+
+            // Display the filtered pets
+            displayPets(filteredPets);
+        }
+
+        // Call displayPets function to render all pets on page load
+        const allPets = JSON.parse(localStorage.getItem('pets')) || [];
+        displayPets(allPets);
+    </script>
+</body>
+</html>

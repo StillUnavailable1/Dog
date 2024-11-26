@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Pet</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1>Edit Pet Details</h1>
+        <nav>
+            <button onclick="location.href='pets.html'">Back to Pets</button>
+            <button onclick="location.href='logout.html'">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Select a Pet to Edit</h2>
+        
+        <!-- Pet selection dropdown -->
+        <select id="editPetName" onchange="populateEditForm()">
+            <option value="">-- Select a Pet --</option>
+            <!-- Pets will be populated dynamically -->
+        </select><br><br>
+
+        <div id="editPetForm" style="display: none;">
+            <h3>Edit Existing Pet</h3>
+            <form id="editPetFormData">
+                <label for="editBreed">Breed:</label>
+                <input type="text" id="editBreed"><br><br>
+                <label for="editAge">Age:</label>
+                <input type="number" id="editAge"><br><br>
+                <label for="editDescription">Description:</label><br>
+                <textarea id="editDescription" rows="4" cols="50"></textarea><br><br>
+                <label for="editImage">Image URL:</label>
+                <input type="text" id="editImage"><br><br>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+
+        <h2>Add a New Pet</h2>
+        <form id="addPetForm">
+            <label for="newPetName">Pet Name:</label>
+            <input type="text" id="newPetName" required><br><br>
+            <label for="newPetBreed">Breed:</label>
+            <input type="text" id="newPetBreed" required><br><br>
+            <label for="newPetAge">Age:</label>
+            <input type="number" id="newPetAge" required><br><br>
+            <label for="newPetDescription">Description:</label><br>
+            <textarea id="newPetDescription" rows="4" cols="50" required></textarea><br><br>
+            <label for="newPetImage">Image URL:</label>
+            <input type="text" id="newPetImage" required><br><br>
+            <button type="submit">Add Pet</button>
+        </form>
+
+        <h2>Remove a Pet</h2>
+        <select id="removePetSelect">
+            <option value="">-- Select a Pet --</option>
+            <!-- Pets will be populated dynamically -->
+        </select><br><br>
+        <button onclick="removePet()">Remove Pet</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // Retrieve the pets list from localStorage (pets data should already be saved here from the main pets page)
+        let pets = JSON.parse(localStorage.getItem('pets')) || [];
+
+        // Check if pets are being correctly retrieved from localStorage
+        console.log(pets);  // Debugging line, make sure pets are logged correctly
+
+        // Function to populate the pet selection dropdowns (Edit & Remove)
+        function populatePetSelects() {
+            const editPetSelect = document.getElementById('editPetName');
+            const removePetSelect = document.getElementById('removePetSelect');
+            editPetSelect.innerHTML = '<option value="">-- Select a Pet --</option>';
+            removePetSelect.innerHTML = '<option value="">-- Select a Pet --</option>';
+
+            pets.forEach(pet => {
+                const editOption = document.createElement('option');
+                editOption.value = pet.name;
+                editOption.textContent = pet.name;
+                editPetSelect.appendChild(editOption);
+
+                const removeOption = document.createElement('option');
+                removeOption.value = pet.name;
+                removeOption.textContent = pet.name;
+                removePetSelect.appendChild(removeOption);
+            });
+        }
+
+        // Function to populate the edit form when a pet is selected
+        function populateEditForm() {
+            const selectedPetName = document.getElementById('editPetName').value;
+            const selectedPet = pets.find(pet => pet.name === selectedPetName);
+            if (selectedPet) {
+                document.getElementById('editBreed').value = selectedPet.breed;
+                document.getElementById('editAge').value = selectedPet.age;
+                document.getElementById('editDescription').value = selectedPet.description;
+                document.getElementById('editImage').value = selectedPet.image;
+                document.getElementById('editPetForm').style.display = 'block'; // Show the form
+            } else {
+                document.getElementById('editPetForm').style.display = 'none'; // Hide the form if no pet selected
+            }
+        }
+
+        // Function to save the changes for editing a pet
+        document.getElementById('editPetFormData')?.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const selectedPetName = document.getElementById('editPetName').value;
+            const petToEdit = pets.find(pet => pet.name === selectedPetName);
+            if (petToEdit) {
+                petToEdit.breed = document.getElementById('editBreed').value;
+                petToEdit.age = document.getElementById('editAge').value;
+                petToEdit.description = document.getElementById('editDescription').value;
+                petToEdit.image = document.getElementById('editImage').value;
+                localStorage.setItem('pets', JSON.stringify(pets));
+                alert('Pet details updated successfully!');
+                populatePetSelects(); // Update the pet lists after editing
+            }
+        });
+
+        // Add a new pet
+        document.getElementById('addPetForm')?.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get the form values
+            const name = document.getElementById('newPetName').value;
+            const breed = document.getElementById('newPetBreed').value;
+            const age = document.getElementById('newPetAge').value;
+            const description = document.getElementById('newPetDescription').value;
+            const image = document.getElementById('newPetImage').value;
+
+            // Create a new pet object
+            const newPet = { name, breed, age, description, image };
+
+            // Add the new pet to the pets list
+            pets.push(newPet);
+            localStorage.setItem('pets', JSON.stringify(pets));
+
+            // Alert user and refresh dropdowns
+            alert('New pet added successfully!');
+            populatePetSelects(); // Refresh the pet lists after adding
+        });
+
+        // Remove a pet
+        function removePet() {
+            const petNameToRemove = document.getElementById('removePetSelect').value;
+            if (petNameToRemove) {
+                pets = pets.filter(pet => pet.name !== petNameToRemove);
+                localStorage.setItem('pets', JSON.stringify(pets));
+                alert('Pet removed successfully!');
+                populatePetSelects(); // Update the pet lists after removing
+            } else {
+                alert('Please select a pet to remove!');
+            }
+        }
+
+        // Initially populate pet dropdowns when the page loads
+        populatePetSelects();
+    </script>
+</body>
+</html>

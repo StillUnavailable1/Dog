@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Profile</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1 id="pet-name">Pet Profile</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <button onclick="location.href='logout.html'" style="margin-left: 10px;">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Details</h2>
+        <img id="pet-image" src="" alt="Pet Picture" style="width: 300px; height: auto;">
+        <p id="breed"></p>
+        <p id="age"></p>
+        <h3>About</h3>
+        <p id="description"></p>
+        <button id="return-to-pets" onclick="location.href='pets.html'">Back to Pets</button>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // Get the pet name from the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const petName = urlParams.get('pet');  // Get the pet name from the query string
+    
+        // Retrieve pet data from localStorage
+        const petData = JSON.parse(localStorage.getItem('pets')) || [];
+    
+        const pet = petData.find(pet => pet.name === petName);
+    
+        if (pet) {
+            // Display pet details
+            document.getElementById('pet-name').innerText = pet.name;
+            document.getElementById('breed').innerText = `Breed: ${pet.breed}`;
+            document.getElementById('age').innerText = `Age: ${pet.age}`;
+            document.getElementById('description').innerText = pet.description;
+    
+            // Log image path for debugging
+            console.log('Image path:', pet.image); // Log image path to check if it's correct
+    
+            // Assuming images are stored in the Dog_Pictures directory
+            const imagePath = `Dog_Pictures/${pet.image}.jpg`;  // Fixing image extension here to match file type
+    
+            // Log the final image path to ensure it's correct
+            console.log('Final image path:', imagePath);
+    
+            // Set the image source (full path to the image)
+            const petImage = document.getElementById('pet-image');
+            petImage.src = imagePath;  // Use the correct path, e.g., "Dog_Pictures/Terry.jpg"
+            petImage.alt = `${pet.name}'s picture`;
+        } else {
+            document.getElementById('pet-name').innerText = 'Pet Not Found';
+            document.getElementById('breed').innerText = '';
+            document.getElementById('age').innerText = '';
+            document.getElementById('description').innerText = 'This pet is not available.';
+            document.getElementById('pet-image').style.display = 'none';  // Hide the image if no pet is found
+        }
+    </script>    
+</body>
+</html>

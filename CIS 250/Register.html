@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Adoption Center</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1>Create a New Account</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <button onclick="location.href='logout.html'" style="margin-left: 10px;">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <form id="registrationForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" required>
+
+            <label for="role">Role:</label>
+            <select id="role" required>
+                <option value="user">User</option>
+                <option value="staff">Staff</option>
+            </select>
+
+            <button type="submit">Register</button>
+        </form>
+        <p id="message"></p>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // Registration form submit logic
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const role = document.getElementById('role').value;
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                document.getElementById('message').textContent = 'Passwords do not match. Please try again.';
+                return;
+            }
+
+            // Create user object
+            const newUser = {
+                username: username,
+                password: password,
+                role: role
+            };
+
+            // Store the new user in localStorage (this is for demo purposes)
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Show success message and redirect to login page
+            document.getElementById('message').textContent = 'Registration successful! Please log in.';
+            setTimeout(function() {
+                location.href = 'login.html'; // Redirect to login page after registration
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

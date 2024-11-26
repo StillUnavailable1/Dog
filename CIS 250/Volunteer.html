@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1>Become a Volunteer</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <button onclick="location.href='logout.html'" style="margin-left: 10px;">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Join Us in Making a Difference!</h2>
+        <p>We welcome volunteers to help with various tasks. Please fill out our volunteer application form below:</p>
+        <form id="volunteerForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            <label for="message">Why do you want to volunteer?</label>
+            <textarea id="message" required></textarea>
+            <button type="submit">Submit Application</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+</body>
+</html>

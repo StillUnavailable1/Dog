@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Adoption Center</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1>Login to Your Account</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <button onclick="location.href='logout.html'" style="margin-left: 10px;">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+            <label for="role">Role:</label>
+            <select id="role">
+                <option value="user">User</option>
+                <option value="staff">Staff</option>
+            </select>
+
+            <!-- Remember Me Checkbox -->
+            <label for="rememberMe">
+                <input type="checkbox" id="rememberMe"> Remember Me
+            </label>
+
+            <button type="submit">Login</button>
+        </form>
+        <p id="message"></p>
+        
+        <!-- Register Link -->
+        <p>Don't have an account? <a href="register.html">Register here</a></p>
+
+        <button id="addPetButton" style="display: none;" onclick="location.href='add_pet.html'">Add Pet</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // On page load, check if credentials are stored in localStorage
+        window.onload = function() {
+            const savedUsername = localStorage.getItem('username');
+            const savedRole = localStorage.getItem('role');
+            const savedPassword = localStorage.getItem('password');
+            const rememberMe = localStorage.getItem('rememberMe');
+
+            if (rememberMe === 'true' && savedUsername && savedRole && savedPassword) {
+                // Auto-fill the form
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('role').value = savedRole;
+                document.getElementById('password').value = savedPassword;
+
+                // Submit the form to log in automatically
+                login(savedUsername, savedPassword, savedRole);
+            }
+        };
+
+        // Login form submit logic
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Retrieve users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Check if the entered credentials match any user
+            const user = users.find(u => u.username === username && u.password === password && u.role === role);
+
+            if (user) {
+                document.getElementById('message').textContent = `Welcome, ${username}! You are logged in as ${role}.`;
+
+                // Set session storage for login status
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('userRole', role);
+
+                // Optionally save login data for "Remember Me"
+                if (rememberMe) {
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('password', password);
+                    localStorage.setItem('role', role);
+                    localStorage.setItem('rememberMe', 'true');
+                } else {
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('password');
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('rememberMe');
+                }
+
+        } 
+        });
+    </script>
+</body>
+</html>

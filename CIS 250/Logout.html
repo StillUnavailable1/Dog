@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logged Out</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <main>
+        <h1>You have logged out!</h1>
+        <p>Thank you for visiting. We hope to see you again soon!</p>
+        <button onclick="location.href='index.html'">Return to Home</button>
+    </main>
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // Clear session and localStorage on page load
+        window.onload = function() {
+            // Remove login information from sessionStorage and localStorage
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+            localStorage.removeItem('role');
+            localStorage.removeItem('rememberMe');
+        };
+    </script>
+</body>
+</html>

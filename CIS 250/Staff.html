@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1>Staff Dashboard</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <button id="staffButton" style="display: none;" onclick="location.href='staff.html'">Staff</button>
+            <button id="logoutButton" style="display: none;" onclick="logout()">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Manage Items</h2>
+        <button onclick="location.href='add_pet.html'">Add New Pet</button>
+        <button onclick="location.href='add_donation.html'">Add Donation Item</button>
+        <button onclick="location.href='add_event.html'">Add New Event</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        function updateStaffButtonVisibility() {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+            const userRole = sessionStorage.getItem('userRole');
+            const staffButton = document.getElementById('staffButton');
+
+            if (isLoggedIn && userRole === 'staff') {
+                staffButton.style.display = 'block'; // Show button for staff
+            } else {
+                staffButton.style.display = 'none'; // Hide button for others
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateStaffButtonVisibility);
+    </script>
+</body>
+</html>

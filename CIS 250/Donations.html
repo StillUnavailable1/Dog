@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donations for Our Adoption Center</title>
+    <link rel="stylesheet" href="Style_Sheet.css">
+</head>
+<body>
+    <header>
+        <h1>Donations for Our Adoption Center</h1>
+        <nav>
+            <button onclick="location.href='index.html'">Home</button>
+            <button onclick="location.href='pets.html'">Pets</button>
+            <button onclick="location.href='adoption.html'">Adoption</button>
+            <button onclick="location.href='donations.html'">Donations</button>
+            <button onclick="location.href='login.html'">Login</button>
+            <button onclick="location.href='volunteer.html'">Volunteer</button>
+            <button onclick="location.href='about.html'">About Us</button>
+            <button onclick="location.href='faq.html'">FAQs</button>
+            <button onclick="location.href='blog.html'">Blog</button>
+            <button onclick="location.href='events.html'">Events</button>
+            <button onclick="location.href='resources.html'">Resources</button>
+            <button onclick="location.href='logout.html'" style="margin-left: 10px;">Logout</button>
+        </nav>
+    </header>
+
+    <main>
+        <div id="donation-list">
+            <h2>Donation Items</h2>
+            <!-- Donation items will be dynamically inserted here -->
+        </div>
+
+        <div id="cart">
+            <h3>Your Cart</h3>
+            <ul id="cart-items">
+                <!-- Cart items will be added here -->
+            </ul>
+            <button id="confirm-donation" onclick="confirmDonation()">Confirm Donation</button>
+        </div>
+
+        <div id="staff-options" style="display: none;">
+            <h3>Staff Options</h3>
+            <button onclick="showAddDonationForm()">Add Donation Item</button>
+            <button onclick="showRemoveDonationForm()">Remove Donation Item</button>
+        </div>
+
+        <!-- Add Donation Form (For Staff) -->
+        <div id="add-donation-form" style="display: none;">
+            <h3>Add Donation Item</h3>
+            <form id="donation-form">
+                <label for="donation-name">Item Name:</label>
+                <input type="text" id="donation-name" required><br><br>
+                <label for="donation-description">Description:</label>
+                <input type="text" id="donation-description" required><br><br>
+                <label for="donation-quantity">Quantity:</label>
+                <input type="number" id="donation-quantity" required><br><br>
+                <button type="submit">Add Item</button>
+            </form>
+        </div>
+
+        <!-- Remove Donation Form (For Staff) -->
+        <div id="remove-donation-form" style="display: none;">
+            <h3>Remove Donation Item</h3>
+            <label for="remove-donation">Select Item to Remove:</label>
+            <select id="remove-donation">
+                <!-- Donation items to remove will appear here -->
+            </select>
+            <button onclick="removeDonation()">Remove Item</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Adoption Center</p>
+    </footer>
+
+    <script>
+        // Check if the user is logged in as a staff member
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        const userRole = sessionStorage.getItem('userRole');
+    
+        // If logged in as staff, show the staff options
+        if (isLoggedIn === 'true' && userRole === 'staff') {
+            document.getElementById('staff-options').style.display = 'block';
+        }
+    
+        // Donation items (stored in localStorage for persistence)
+        let donations = JSON.parse(localStorage.getItem('donations')) || [
+            { name: "Dog Food", description: "High-quality dog food for our furry friends.", quantity: 100 },
+            { name: "Toys", description: "Durable toys for dogs to keep them entertained.", quantity: 50 },
+            { name: "Blankets", description: "Warm blankets for comfort during chilly nights.", quantity: 30 },
+            { name: "Vet Supplies", description: "Essential medical supplies for our pets' health.", quantity: 20 }
+        ];
+    
+        // Cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+        // Function to display donation items
+        function displayDonations() {
+            const donationListDiv = document.getElementById('donation-list');
+            donationListDiv.innerHTML = ''; // Clear existing items
+    
+            donations.forEach((donation, index) => {
+                const donationDiv = document.createElement('div');
+                donationDiv.classList.add('donation-item');
+                donationDiv.innerHTML = `
+                    <h3>${donation.name}</h3>
+                    <p>${donation.description}</p>
+                    <p>Quantity Available: ${donation.quantity}</p>
+                    <button onclick="addToCart(${index})">Add to Cart</button>
+                `;
+                donationListDiv.appendChild(donationDiv);
+            });
+        }
+    
+        // Display donation items when the page loads
+        displayDonations();
+    
+        // Add item to cart
+        function addToCart(index) {
+            const donation = donations[index];
+            cart.push(donation);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+    
+        // Update the cart display
+        function updateCart() {
+            const cartItemsList = document.getElementById('cart-items');
+            cartItemsList.innerHTML = ''; // Clear the cart list
+    
+            if (cart.length === 0) {
+                const emptyMessage = document.createElement('li');
+                emptyMessage.textContent = "Your cart is empty.";
+                cartItemsList.appendChild(emptyMessage);
+            } else {
+                cart.forEach((item, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `${item.name} - ${item.quantity} <button onclick="removeFromCart(${index})">Remove</button>`;
+                    cartItemsList.appendChild(listItem);
+                });
+            }
+        }
+    
+        // Function to remove an item from the cart
+        function removeFromCart(index) {
+            cart.splice(index, 1); // Remove the item from the cart array
+            localStorage.setItem('cart', JSON.stringify(cart)); // Update cart in localStorage
+            updateCart(); // Update the cart display
+        }
+    
+        // Confirm donation (clear the cart)
+        function confirmDonation() {
+            // Clear only the cart in localStorage
+            localStorage.setItem('cart', JSON.stringify([]));
+    
+            // Clear the cart array in the script as well
+            cart = [];
+    
+            // Empty the cart visually by calling updateCart
+            updateCart();
+    
+            // Show a confirmation message
+            alert('Thank you for your donation!');
+        }
+    
+        // Show the form to add a donation item (for staff)
+        function showAddDonationForm() {
+            document.getElementById('add-donation-form').style.display = 'block';
+            document.getElementById('remove-donation-form').style.display = 'none';
+        }
+    
+        // Show the form to remove a donation item (for staff)
+        function showRemoveDonationForm() {
+            document.getElementById('remove-donation-form').style.display = 'block';
+            document.getElementById('add-donation-form').style.display = 'none';
+    
+            // Populate the remove dropdown
+            const removeSelect = document.getElementById('remove-donation');
+            removeSelect.innerHTML = ''; // Clear existing options
+            donations.forEach((donation, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = donation.name;
+                removeSelect.appendChild(option);
+            });
+        }
+    
+        // Add a new donation item (for staff)
+        document.getElementById('donation-form')?.addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const newItem = {
+                name: document.getElementById('donation-name').value,
+                description: document.getElementById('donation-description').value,
+                quantity: parseInt(document.getElementById('donation-quantity').value)
+            };
+    
+            donations.push(newItem);
+            localStorage.setItem('donations', JSON.stringify(donations));
+            displayDonations();
+            alert('Donation item added successfully!');
+            document.getElementById('add-donation-form').style.display = 'none';
+        });
+    
+        // Remove a donation item (for staff)
+        function removeDonation() {
+            const removeSelect = document.getElementById('remove-donation');
+            const indexToRemove = removeSelect.value;
+    
+            donations.splice(indexToRemove, 1);
+            localStorage.setItem('donations', JSON.stringify(donations));
+            displayDonations();
+            alert('Donation item removed successfully!');
+            document.getElementById('remove-donation-form').style.display = 'none';
+        }
+    
+    </script>
+    
